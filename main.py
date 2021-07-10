@@ -1,5 +1,4 @@
-# This is a sample Python script.
-
+import os
 # Press Umschalt+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 no_maintenance = True
@@ -34,46 +33,69 @@ resources = {
     "water": 300,
     "milk": 200,
     "coffee": 100,
+    "money": 0
 }
 
+# Functions
+def clear_screen():
+    """clear screen"""
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-# TODO: 1. Prompt user by asking “What would you like? (espresso/latte/cappuccino):”
-# a. Check the user’s input to decide what to do next.
-# b. The prompt should show every time action has completed, e.g. once the drink is
-# dispensed. The prompt should show again to serve the next customer.# 
+
+def check_resources(product):
+    """Check resources sufficient? a. When the user chooses a drink, the program should check
+     if there are enough resources to make that drink."""
+    for item in MENU[product]['ingredients']:
+        if resources[item] < MENU[product]['ingredients'][item]:
+            print(f"Sorry there is not enough {item}.")
+            return
+    resources['money'] += MENU[product]['cost']
+    for item in MENU[product]['ingredients']:
+        resources[item] -= MENU[product]['ingredients'][item]
+    # for item in resources:
+    #    print(f"neuer Wert für {item} = {resources[item]}")
+
+
+def get_price(product):
+    """get the price of the selected coffee"""
+    return MENU[product]['cost']
+
+
+def return_report():
+    """return a report of the current resources as an inventory status"""
+    unit = "ml"
+    for item in resources:
+        if item == "coffee":
+            print(f"{item}: {resources[item]} g")
+        elif item == "money":
+            print(f"{item.capitalize()}: $ {resources[item]}")
+        else:
+            print(f"{item}: {resources[item]} {unit}")
+
+
 while no_maintenance:
-    choosen = input("What would you like?").lower()
-    if choosen == "off":
+    """Check the user’s input to decide what to do next."""
+    clear_screen()
+    print(f"\nMenu:")
+    for value in MENU:
+        print(f"{value.capitalize()} = $ {MENU[value]['cost']}")
+    selected_item = input(f"\nWhat would you like?\n").lower()
+    if selected_item == "off":
         no_maintenance = False
         print("Bye bye")
-    elif choosen == "report":
-        print("Water: 100ml")
-    elif choosen == "latte":
-        print("You choosed Latte")
-    elif choosen == "espresso":
-        print("You choosed Expresso")
-    elif choosen == "cappuccion":
-        print("You choosed Cappuccion")
+    elif selected_item == "report":
+        return_report()
+    elif selected_item == "latte":
+        print(f"You selected {selected_item.capitalize()} for $ {get_price(selected_item)}")
+        check_resources(selected_item)
+    elif selected_item == "espresso":
+        print(f"You selected {selected_item.capitalize()} for $ {get_price(selected_item)}")
+        check_resources(selected_item)
+    elif selected_item == "cappuccino":
+        print(f"You selected {selected_item.capitalize()} for $ {get_price(selected_item)}")
+        check_resources(selected_item)
     else:
-        print("Wrong etnry, please try it again!")
-
-
-
-# TODO: 3. Print report.
-# a. When the user enters “report” to the prompt, a report should be generated that shows
-# the current resource values. e.g.
-# Water: 100ml
-# Milk: 50ml
-# Coffee: 76g
-# Money: $2.5
-
-
-# TODO: 4. Check resources sufficient?
-# a. When the user chooses a drink, the program should check if there are enough
-# resources to make that drink.
-# b. E.g. if Latte requires 200ml water but there is only 100ml left in the machine. It should
-# not continue to make the drink but print: “Sorry there is not enough water.”
-# c. The same should happen if another resource is depleted, e.g. milk or coffee.
+        print("Wrong entry, please try it again!")
 
 
 # TODO: 5. Process coins.
