@@ -36,6 +36,13 @@ resources = {
     "money": 0
 }
 
+coinvalue = {
+    "quarter": 0.25,
+    "dime": 0.10,
+    "nickel": 0.05,
+    "pennie": 0.01
+}
+
 # Functions
 def clear_screen():
     """clear screen"""
@@ -49,11 +56,12 @@ def check_resources(product):
         if resources[item] < MENU[product]['ingredients'][item]:
             print(f"Sorry there is not enough {item}.")
             return
-    resources['money'] += MENU[product]['cost']
-    for item in MENU[product]['ingredients']:
-        resources[item] -= MENU[product]['ingredients'][item]
-    # for item in resources:
-    #    print(f"neuer Wert für {item} = {resources[item]}")
+    insert_coins = calc_coins(product)
+    if insert_coins > 0:
+        resources['money'] += insert_coins # MENU[product]['cost']
+        for item in MENU[product]['ingredients']:
+            resources[item] -= MENU[product]['ingredients'][item]
+        # calculate the coins needed
 
 
 def get_price(product):
@@ -61,18 +69,48 @@ def get_price(product):
     return MENU[product]['cost']
 
 
+def calc_coins(product):
+    """the program prompt the user to insert coins and calculates the monetary value of the coins insert
+    and check that the user has inserted enough money to purchase the drink they selected - Possible values to insert:
+    quarter = $0.25, dime = $0.10, nickel = $0.05, pennie = $0.01"""
+    insert_value = 0
+    price = get_price(product)
+    print("Possible coins to insert: quarter = $0.25, dime = $0.10, nickel = $0.05, pennie = $0.01!")
+    while insert_value < price:
+        coin_type = False
+        insert = input("Type in a coin: ")
+        for coin in coinvalue:
+            if insert == coin:
+                coin_type = True
+                insert_value += coinvalue[insert]
+                print(f"Insert value: $ {insert_value}")
+                break
+        if coin_type is False and insert_value < price:
+            print(f"Sorry that's not enough money. Money refunded.")
+            return 0
+        elif insert_value > price:
+            print(f"Here is $ {round(insert_value - price, 2)} dollars in change.")
+            print(f"Here is your latte. Enjoy!")
+            return price
+        elif insert_value == price:
+            print(f"Here is your latte. Enjoy!")
+            return price
+
+
 def return_report():
     """return a report of the current resources as an inventory status"""
     unit = "ml"
     for item in resources:
         if item == "coffee":
-            print(f"{item}: {resources[item]} g")
+            unit = "g"
+            print(f"{item}: {resources[item]} {unit}")
         elif item == "money":
             print(f"{item.capitalize()}: $ {resources[item]}")
         else:
             print(f"{item}: {resources[item]} {unit}")
 
 
+# Program
 while no_maintenance:
     """Check the user’s input to decide what to do next."""
     clear_screen()
@@ -96,43 +134,4 @@ while no_maintenance:
         check_resources(selected_item)
     else:
         print("Wrong entry, please try it again!")
-
-
-# TODO: 5. Process coins.
-# a. If there are sufficient resources to make the drink selected, then the program should
-# prompt the user to insert coins.
-# b. Remember that quarters = $0.25, dimes = $0.10, nickles = $0.05, pennies = $0.01
-# c. Calculate the monetary value of the coins inserted. E.g. 1 quarter, 2 dimes, 1 nickel, 2
-# pennies = 0.25 + 0.1 x 2 + 0.05 + 0.01 x 2 = $0.52
-
-
-# TODO: 6. Check transaction successful?
-# a. Check that the user has inserted enough money to purchase the drink they selected.
-# E.g Latte cost $2.50, but they only inserted $0.52 then after counting the coins the
-# program should say “Sorry that# s not enough money. Money refunded.”.
-# b. But if the user has inserted enough money, then the cost of the drink gets added to the
-# machine as the profit and this will be reflected the next time “report” is triggered. E.g.
-# Water: 100ml
-# Milk: 50ml
-# Coffee: 76g
-# Money: $2.5
-# c. If the user has inserted too much money, the machine should offer change.E.g. “Here is $2.45 dollars in change.” The change should be rounded to 2 decimal
-# places.
-
-
-# TODO: 7. Make Coffee.
-# a. If the transaction is successful and there are enough resources to make the drink the
-# user selected, then the ingredients to make the drink should be deducted from the
-# coffee machine resources.
-# E.g. report before purchasing latte:
-# Water: 300ml
-# Milk: 200ml
-# Coffee: 100g
-# Money: $0
-# Report after purchasing latte:
-# Water: 100ml
-# Milk: 50ml
-# Coffee: 76g
-# Money: $2.5
-# b. Once all resources have been deducted, tell the user “Here is your latte. Enjoy!”. If
-# latte was their choice of drink
+    clear_screen()
