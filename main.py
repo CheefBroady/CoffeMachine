@@ -1,7 +1,7 @@
 import os
 # Press Umschalt+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-no_maintenance = True
+is_on = True
 
 MENU = {
     "espresso": {
@@ -51,7 +51,9 @@ def clear_screen():
 
 def check_resources(product):
     """Check resources sufficient? a. When the user chooses a drink, the program should check
-     if there are enough resources to make that drink."""
+     if there are enough resources to make that drink.
+     when the process has been accomplished
+     add price and subtract ingredients, depenedet of the selected product"""
     for item in MENU[product]['ingredients']:
         if resources[item] < MENU[product]['ingredients'][item]:
             print(f"Sorry there is not enough {item}.")
@@ -65,12 +67,13 @@ def check_resources(product):
 
 
 def get_price(product):
-    """get the price of the selected coffee"""
+    """Returns the price of the selected product"""
     return MENU[product]['cost']
 
 
 def calc_coins(product):
-    """the program prompt the user to insert coins and calculates the monetary value of the coins insert
+    """Returns the value of entered coins when it has accomplished the ordering process or 0 when its wrong.
+    The program prompt the user to insert coins and calculates the monetary value of the coins insert
     and check that the user has inserted enough money to purchase the drink they selected - Possible values to insert:
     quarter = $0.25, dime = $0.10, nickel = $0.05, pennie = $0.01"""
     insert_value = 0
@@ -93,12 +96,12 @@ def calc_coins(product):
             print(f"Here is your latte. Enjoy!")
             return price
         elif insert_value == price:
-            print(f"Here is your latte. Enjoy!")
+            print(f"Here is your {product}. Enjoy!")
             return price
 
 
 def return_report():
-    """return a report of the current resources as an inventory status"""
+    """Returns a report of the current resources as an inventory status"""
     unit = "ml"
     for item in resources:
         if item == "coffee":
@@ -111,7 +114,7 @@ def return_report():
 
 
 # Program
-while no_maintenance:
+while is_on:
     """Check the user’s input to decide what to do next."""
     clear_screen()
     print(f"\nMenu:")
@@ -119,7 +122,7 @@ while no_maintenance:
         print(f"{value.capitalize()} = $ {MENU[value]['cost']}")
     selected_item = input(f"\nWhat would you like?\n").lower()
     if selected_item == "off":
-        no_maintenance = False
+        is_on = False
         print("Bye bye")
     elif selected_item == "report":
         return_report()
