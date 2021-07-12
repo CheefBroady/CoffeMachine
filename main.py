@@ -80,20 +80,25 @@ def calc_coins(product):
     price = get_price(product)
     print("Possible coins to insert: quarter = $0.25, dime = $0.10, nickel = $0.05, pennie = $0.01!")
     while insert_value < price:
-        coin_type = False
-        insert = input("Type in a coin: ")
-        for coin in coinvalue:
-            if insert == coin:
-                coin_type = True
-                insert_value += coinvalue[insert]
-                print(f"Insert value: $ {insert_value}")
-                break
-        if coin_type is False and insert_value < price:
+        # coin_type = False
+        insert_value = int(input("Number of quarter insert: ")) * 0.25
+        insert_value += int(input("Number of quarter insert: ")) * 0.10
+        insert_value += int(input("Number of quarter insert: ")) * 0.05
+        insert_value += int(input("Number of quarter insert: ")) * 0.01
+        # insert = input("Type in a coin: ")
+        # for coin in coinvalue:
+        #    if insert == coin:
+        #        coin_type = True
+        #        insert_value += coinvalue[insert]
+        #        print(f"Insert value: $ {insert_value}")
+        #        break
+        # if coin_type is False and insert_value < price:
+        if insert_value < price:
             print(f"Sorry that's not enough money. Money refunded.")
             return 0
         elif insert_value > price:
             print(f"Here is $ {round(insert_value - price, 2)} dollars in change.")
-            print(f"Here is your latte. Enjoy!")
+            print(f"Here is your {product}. Enjoy!")
             return price
         elif insert_value == price:
             print(f"Here is your {product}. Enjoy!")
